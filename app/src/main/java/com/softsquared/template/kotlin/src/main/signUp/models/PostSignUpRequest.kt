@@ -1,4 +1,4 @@
-package com.softsquared.template.kotlin.src.main.home.models
+package com.softsquared.template.kotlin.src.main.signUp.models
 
 import com.google.gson.annotations.SerializedName
 

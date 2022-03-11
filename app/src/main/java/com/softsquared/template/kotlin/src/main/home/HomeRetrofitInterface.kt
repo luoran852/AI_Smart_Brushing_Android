@@ -10,6 +10,6 @@ interface HomeRetrofitInterface {
     @GET("/users")
     fun getUsers() : Call<UserResponse>
 
-    @POST("/users")
+    @POST("/users/sign-up")
     fun postSignUp(@Body params: PostSignUpRequest): Call<SignUpResponse>
 }

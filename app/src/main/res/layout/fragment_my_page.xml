@@ -1,20 +1,249 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context=".src.main.myPage.MyPageFragment">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button_change_counter_text"
-        android:layout_width="wrap_content"
+    <CalendarView
+        android:id="@+id/calendarView2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/my_page_btn_counting_number"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="15dp"/>
 
     <TextView
-        android:id="@+id/text_view_counter"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:text="날짜"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        app:layout_constraintTop_toBottomOf="@id/calendarView2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/cardview_layout"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardview_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date">
+
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:clickable="true"
+            card_view:layout_constraintTop_toTopOf="parent"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/blueForCard"
+            card_view:cardCornerRadius="12dp"
+            android:outlineSpotShadowColor="@color/blueForCard"
+            android:outlineAmbientShadowColor="@color/blueForCard"
+            >
+
+            <RelativeLayout
+                android:id="@+id/cardview_layout_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/blueForCard"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/item_image_1"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ic_baseline_wb_sunny_24" />
+
+
+                <TextView
+                    android:id="@+id/item_title_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/item_image_1"
+                    android:layout_toRightOf="@id/item_image_1"
+                    android:text="아침"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/morning_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/item_title_1"
+                    android:layout_toEndOf="@+id/item_image_1"
+                    android:layout_toRightOf="@+id/item_image_1"
+                    android:text="점수: 65" />
+
+                <TextView
+                    android:id="@+id/morning_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/morning_score"
+                    android:layout_toEndOf="@id/item_image_1"
+                    android:text="양치 시간: 1분 22초" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            card_view:layout_constraintTop_toBottomOf="@id/card_view_1"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/blueForCard"
+            android:outlineSpotShadowColor="@color/blueForCard"
+            android:outlineAmbientShadowColor="@color/blueForCard"
+            card_view:cardCornerRadius="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/blueForCard"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/item_image_2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ic_baseline_fastfood_24" />
+
+
+                <TextView
+                    android:id="@+id/item_title_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/item_image_2"
+                    android:layout_toRightOf="@id/item_image_2"
+                    android:text="점심"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lunch_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/item_title_2"
+                    android:layout_toEndOf="@+id/item_image_2"
+                    android:layout_toRightOf="@+id/item_image_2"
+                    android:text="점수: 82점" />
+                <TextView
+                    android:id="@+id/lunch_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lunch_score"
+                    android:layout_toEndOf="@+id/item_image_2"
+                    android:layout_toRightOf="@+id/item_image_2"
+                    android:text="양치 시간: 2분 30초" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            card_view:layout_constraintTop_toBottomOf="@id/card_view_2"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:cardBackgroundColor="@color/blueForCard"
+            android:outlineSpotShadowColor="@color/blueForCard"
+            android:outlineAmbientShadowColor="@color/blueForCard"
+            card_view:cardCornerRadius="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/blueForCard"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/item_image_3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/ic_baseline_nightlight_24" />
+
+
+                <TextView
+                    android:id="@+id/item_title_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/item_image_3"
+                    android:layout_toRightOf="@id/item_image_3"
+                    android:text="저녁"
+                    android:textStyle="bold"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:id="@+id/dinner_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/item_title_3"
+                    android:layout_toEndOf="@+id/item_image_3"
+                    android:layout_toRightOf="@+id/item_image_3"
+                    android:text="점수: 94점" />
+
+                <TextView
+                    android:id="@+id/dinner_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dinner_score"
+                    android:layout_toEndOf="@+id/item_image_3"
+                    android:layout_toRightOf="@+id/item_image_3"
+                    android:text="양치 시간: 2분 44초" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
