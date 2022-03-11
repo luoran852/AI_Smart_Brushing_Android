@@ -23,5 +23,11 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(ActivityLoginBinding::i
             finish()
         }
 
+        // 비밀번호 찾기 버튼
+        binding.findPwdBtn.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
+
     }
 }
