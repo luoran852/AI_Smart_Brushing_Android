@@ -1,6 +1,7 @@
 package com.softsquared.template.kotlin.src.main.myPage
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
@@ -40,8 +41,11 @@ class MyPageFragment :
 
         binding.cardviewLayout1.setOnClickListener {
             Log.e(TAG, "onViewCreated: ", )
-            val intent = Intent(activity, Result1Activity::class.java)
-            startActivity(intent)
+            activity?.let {
+                val intent = Intent(activity, Result1Activity::class.java)
+                startActivity(intent)
+            }
+
         }
 
     }

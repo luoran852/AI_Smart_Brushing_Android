@@ -16,12 +16,20 @@ class SignUpActivity : BaseActivity<ActivitySignupBinding>(ActivitySignupBinding
 
     val TAG : String = "태그"
 
+    //login activity에 저장한 X_ACCESS_TOKEN
+    val XACCESSTOKEN = ApplicationClass.sSharedPreferences.getString(ApplicationClass.X_ACCESS_TOKEN, "")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.e(TAG, "XACCESSTOKEN = $XACCESSTOKEN")
+
+        if (!(XACCESSTOKEN.equals(""))) {
+            val userIdx = ApplicationClass.sSharedPreferences.getInt("userIdx", 0) //sf에 저장된 userIdx 가져오기
+        }
+
         // 뒤로가기 버튼
         binding.signUpBackBtn.setOnClickListener {
-            startActivity(Intent(this, SplashActivity::class.java))
             finish()
         }
 
@@ -48,9 +56,10 @@ class SignUpActivity : BaseActivity<ActivitySignupBinding>(ActivitySignupBinding
 
         if (response.code == 1000) {
             Log.e(TAG, "onPostSignUpSuccess: 회원가입 성공")
-            response.message?.let { showCustomToast(it) }
+            response.message?.let { showCustomToast("회원가입 성공") }
 
             Log.e(TAG, "회원가입 성공, userIdx = ${response.result.userIdx}")
+            Log.e(TAG, "jwt = ${response.result.jwt}")
 
             // SharedPreferences 의 데이터를 저장/편집을 위해 Editor 변수를 선언
             val editor = ApplicationClass.sSharedPreferences.edit()
@@ -83,12 +92,28 @@ class SignUpActivity : BaseActivity<ActivitySignupBinding>(ActivitySignupBinding
                 showCustomToast("$message")
             }
 
+            // 중복된 이메일입니다.
+            2017 -> {
+                showCustomToast("$message")
+            }
+
             // 비밀번호 형식을 확인해주세요.(최소 8자, 최소 하나의 문자, 하나의 숫자 및 하나의 특수 문자)
             2018 -> {
                 showCustomToast("$message")
             }
 
+            // 데이터베이스 연결에 실패하였습니다.
+            4000 -> {
+                showCustomToast("$message")
+            }
+
+            // 비밀번호 암호화에 실패하였습니다.
+            4011 -> {
+                showCustomToast("$message")
+            }
+
         }
+        response.message?.let { showCustomToast("$message") }
     }
 
 }

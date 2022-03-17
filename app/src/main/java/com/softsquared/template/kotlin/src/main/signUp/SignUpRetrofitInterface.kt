@@ -7,7 +7,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface SignUpActivityInterface {
+interface SignUpRetrofitInterface {
 
     @POST("/users/sign-up")
     fun postSignUp(@Body params:PostSignUpRequest): Call<SignUpResponse>
