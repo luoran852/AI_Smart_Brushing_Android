@@ -86,22 +86,6 @@
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/morning_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/item_title_1"
-                    android:layout_toEndOf="@+id/item_image_1"
-                    android:layout_toRightOf="@+id/item_image_1"
-                    android:text="점수: 65" />
-
-                <TextView
-                    android:id="@+id/morning_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/morning_score"
-                    android:layout_toEndOf="@id/item_image_1"
-                    android:text="양치 시간: 1분 22초" />
 
             </RelativeLayout>
 
@@ -126,6 +110,7 @@
             card_view:cardCornerRadius="12dp">
 
             <RelativeLayout
+                android:id="@+id/cardview_layout_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/blueForCard"
@@ -154,23 +139,6 @@
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/lunch_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/item_title_2"
-                    android:layout_toEndOf="@+id/item_image_2"
-                    android:layout_toRightOf="@+id/item_image_2"
-                    android:text="점수: 82점" />
-                <TextView
-                    android:id="@+id/lunch_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/lunch_score"
-                    android:layout_toEndOf="@+id/item_image_2"
-                    android:layout_toRightOf="@+id/item_image_2"
-                    android:text="양치 시간: 2분 30초" />
-
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
@@ -194,6 +162,7 @@
             card_view:cardCornerRadius="12dp">
 
             <RelativeLayout
+                android:id="@+id/cardview_layout_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/blueForCard"
@@ -221,24 +190,6 @@
                     android:text="저녁"
                     android:textStyle="bold"
                     android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/dinner_score"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/item_title_3"
-                    android:layout_toEndOf="@+id/item_image_3"
-                    android:layout_toRightOf="@+id/item_image_3"
-                    android:text="점수: 94점" />
-
-                <TextView
-                    android:id="@+id/dinner_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/dinner_score"
-                    android:layout_toEndOf="@+id/item_image_3"
-                    android:layout_toRightOf="@+id/item_image_3"
-                    android:text="양치 시간: 2분 44초" />
 
             </RelativeLayout>
 

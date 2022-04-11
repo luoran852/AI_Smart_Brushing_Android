@@ -39,7 +39,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".src.main.result.Result1Activity"
+        <activity android:name=".src.main.dateDetail.DateDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
