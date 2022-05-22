@@ -19,7 +19,7 @@
         android:src="@drawable/teeth_model"/>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/end_btn"
+        android:id="@+id/start_btn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/img_teeth"
@@ -27,14 +27,14 @@
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="종료"/>
+        android:text="양치 시작"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/end_btn"
+        app:layout_constraintTop_toBottomOf="@id/start_btn"
         android:layout_margin="20dp"
         android:backgroundTint="@color/colorAccent">
 
@@ -43,17 +43,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:text="양치시간: 01:22"/>
-
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--android:text="양치시간: 01:22"-->
         <TextView
             android:id="@+id/feedback_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="Feedback: 오른쪽 상악부 양치질이 더 필요합니다."
-            app:layout_constraintTop_toBottomOf="@id/brushing_time_txt"/>
 
+
+            app:layout_constraintTop_toBottomOf="@id/brushing_time_txt"/>
+        <!-- android:text="Feedback: 오른쪽 상악부 양치질이 더 필요합니다."-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
