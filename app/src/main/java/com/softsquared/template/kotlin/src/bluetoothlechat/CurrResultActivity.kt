@@ -31,7 +31,7 @@ class CurrResultActivity : AppCompatActivity(){
         Toast.makeText(this,"양치 시간: "+date+" / "+time, Toast.LENGTH_LONG).show()
        //Toast.makeText(this,"Time: "+ time +"초" + " score: " + score, Toast.LENGTH_LONG).show()
         val timeTxt = findViewById(R.id.time_txt) as TextView
-        timeTxt.setText("양치시간:$time" + "초")
+        timeTxt.setText("양치시간:$brushing_time" + "초")
         val scoreTxt = findViewById(R.id.score_txt) as TextView
         scoreTxt.setText("점수: $score" + "점")
         val okBtn = findViewById(R.id.btn_ok) as Button
