@@ -14,15 +14,21 @@ import com.softsquared.template.kotlin.src.main.MainActivity
 
 class CurrResultActivity : AppCompatActivity(){
     val binding by lazy { ActivityCurrResultBinding.inflate(layoutInflater) }
-    var time: Long ?= 0
-    var score: Double ?= 0.0
+    var date:  String? = null // 양치한 날짜
+    var time:  String? = null // 양치한 시간
+    var brushing_time: Long ?= 0 // 양치 소요 시간
+    var score: Double ?= 0.0 // 양치 점수
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_curr_result)
         setTitle("양치 결과")
-        time = intent.getLongExtra("time", 0)
+        date = intent.getStringExtra("date")
+        time = intent.getStringExtra("time")
         score = intent.getDoubleExtra("score",0.0)
+        brushing_time = intent.getLongExtra("brushing_time", 0)
+        score = intent.getDoubleExtra("score",0.0)
+        Toast.makeText(this,"양치 시간: "+date+" / "+time, Toast.LENGTH_LONG).show()
        //Toast.makeText(this,"Time: "+ time +"초" + " score: " + score, Toast.LENGTH_LONG).show()
         val timeTxt = findViewById(R.id.time_txt) as TextView
         timeTxt.setText("양치시간:$time" + "초")

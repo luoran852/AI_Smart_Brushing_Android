@@ -38,6 +38,7 @@ import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.ChatServer
 import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.Message
 import com.softsquared.template.kotlin.src.bluetoothlechat.gone
 import com.softsquared.template.kotlin.src.bluetoothlechat.visible
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -53,11 +54,15 @@ class BluetoothChatFragment : Fragment() {
     private val binding: FragmentBluetoothChatBinding
         get() = _binding!!
 
-    /*txt file*/
+    /*워치 데이터 저장하는 변수*/
     private var output: String? = ""
+    /*양치한 시간 저장하는 변수*/
+    private var date: String? = null
     private var time: String? = null
-    private var date = Date(System.currentTimeMillis())
-    /*양치 결과 계산*/
+    private var now = Date(System.currentTimeMillis())
+    val pathFormat_date = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
+    val pathFormat_time = SimpleDateFormat("HH시 mm분 ss초", Locale.KOREA)
+    /*양치 결과 계산(태그, 소요시간, 점수)*/
     var tagCount = arrayOf<Int>(16, 0)// 0, 0, 0 ,0 ..., 0
     var beforeTime: Long = 0
     var afterTime: Long = 0
@@ -204,6 +209,8 @@ class BluetoothChatFragment : Fragment() {
         ChatServer.connectionRequest.observe(viewLifecycleOwner, connectionRequestObserver)
         ChatServer.deviceConnection.observe(viewLifecycleOwner, deviceConnectionObserver)
         ChatServer.messages.observe(viewLifecycleOwner, messageObserver)
+        date = pathFormat_date.format(now)
+        time = pathFormat_time.format(now)
     }
 
     override fun onDestroyView() {
@@ -232,7 +239,9 @@ class BluetoothChatFragment : Fragment() {
             // 결과 돌려줄 인텐트 생성 후 저장
             val returnIntent = Intent(getActivity(), CurrResultActivity::class.java) // 결과 액티비티로 이동 해야함
             // 값 담기
-            returnIntent.putExtra("time",secDiffTime)
+            returnIntent.putExtra("time",time)
+            returnIntent.putExtra("date",date)
+            returnIntent.putExtra("brushing_time",secDiffTime)
             returnIntent.putExtra("score",score)
 
             getActivity()?.let { it1 -> ActivityCompat.finishAffinity(it1) } // 모든 액티비티 종료
