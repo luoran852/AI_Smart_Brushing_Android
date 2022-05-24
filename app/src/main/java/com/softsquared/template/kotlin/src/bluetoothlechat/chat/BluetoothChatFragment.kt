@@ -57,7 +57,7 @@ class BluetoothChatFragment : Fragment() {
         get() = _binding!!
 
     /*워치 데이터 저장*/
-    private var output: String? = ""
+    private var output: String = ""
     private var cnt: Int = 0
 
     /*양치한 시간 저장하는 변수*/
@@ -75,7 +75,7 @@ class BluetoothChatFragment : Fragment() {
     var score: Double = 0.0
 
     /*태그*/
-    var tagNow: String? = ""
+    var tagNow: Int = 0
     var tagResult: String? = ""
 
     private val deviceConnectionObserver = Observer<DeviceConnectionState> { state ->
@@ -113,55 +113,6 @@ class BluetoothChatFragment : Fragment() {
             beforeTime = System.currentTimeMillis()
             Toast.makeText(context,"START", Toast.LENGTH_LONG).show()
         }
-        // 수정해야 함. tflite 모델이 태그를 리턴하면 태그 수가 늘어나게
-        else if(message.text.contains("[TAG1]")){
-            getTagData(0, message)
-        }
-        else if(message.text.contains("[TAG2]")){
-            getTagData(1, message)
-        }
-        else if(message.text.contains("[TAG3]")){
-            getTagData(2, message)
-        }
-        else if(message.text.contains("[TAG4]")){
-            getTagData(3, message)
-        }
-        else if(message.text.contains("[TAG5]")){
-            getTagData(4, message)
-        }
-        else if(message.text.contains("[TAG6]")){
-            getTagData(5, message)
-        }
-        else if(message.text.contains("[TAG7]")){
-            getTagData(6, message)
-        }
-        else if(message.text.contains("[TAG8]")){
-            getTagData(7, message)
-        }
-        else if(message.text.contains("[TAG9]")){
-            getTagData(8, message)
-        }
-        else if(message.text.contains("[TAG10]")){
-            getTagData(9, message)
-        }
-        else if(message.text.contains("[TAG11]")){
-            getTagData(10, message)
-        }
-        else if(message.text.contains("[TAG12]")){
-            getTagData(11, message)
-        }
-        else if(message.text.contains("[TAG13]")){
-            getTagData(12, message)
-        }
-        else if(message.text.contains("[TAG14]")){
-            getTagData(13, message)
-        }
-        else if(message.text.contains("[TAG15]")){
-            getTagData(14, message)
-        }
-        else if(message.text.contains("[TAG16]")){
-            getTagData(15, message)
-        }
         else if(message.text.contains("[STOP]")){
             stop_clicked = true
             afterTime = System.currentTimeMillis()
@@ -183,18 +134,29 @@ class BluetoothChatFragment : Fragment() {
 //            }
         }
         else{
-            output += ( message.text ) // 워치로부터 받은 데이터를 모두 output에 저장한다
-            // 이 부분을 어떻게...파싱하고, 데이터 20개씩 잘라야 함.
+            if(cnt == 20){ // 행 20개, 열 9개가 한 세트임
+                val preprocessedInput = preprocess(output)// 전처리 함수가 파싱한 데이터 리턴
+                // 모델에 입력 값 넣으면 모델이 태그 리턴
+                tagNow = 1// 모델에서 리턴해야 함!!
+                getTagData(tagNow)
+                binding.txtTagNow.text = tagNow.toString()
+                tagResult += tagNow
+                binding.txtTagResult.text = tagResult
+                output = ""
+                cnt = 0
+            }
+            else{
+                cnt+=1 // 카운트를 하나 늘려준다
+                output += ( message.text ) // 워치로부터 받은 데이터를 모두 output에 저장한다
+            }
 
-            tagNow = "1" // 모델에서 리턴해야 함!!
-            binding.txtTagNow.text = tagNow
-            tagResult += tagNow
-            binding.txtTagResult.text = tagResult
         }
     }
-    fun getTagData(tag: Int, message:Message){
-        Toast.makeText(context, message.text, Toast.LENGTH_SHORT).show();
-        output += ("[" + message.text + "]")
+    fun preprocess(input: String): String {
+        val output: String = ""
+        return output
+    }
+    fun getTagData(tag: Int){
         tagCount[tag]++
     }
     private val inputMethodManager by lazy {
