@@ -66,8 +66,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="100dp"
+            android:layout_margin="30dp"
             android:src="@drawable/teeth_model"/>
+        <TextView
+            android:id="@+id/txt_tag_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:text="1"/>
+        <TextView
+            android:id="@+id/txt_tag_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="1111111222222223333333444444444455555555556666666677777777778888888899999999999910101010111111121212121313131414141515151516161616"/>
         <Button
             android:id="@+id/stop_btn"
             android:layout_width="wrap_content"

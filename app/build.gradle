@@ -80,4 +80,7 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.2.0-alpha08'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+
+    // deep learning model
+    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
 }

@@ -33,11 +33,13 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.softsquared.template.kotlin.R
 import com.softsquared.template.kotlin.databinding.FragmentBluetoothChatBinding
+import com.softsquared.template.kotlin.src.bluetoothlechat.Classifier
 import com.softsquared.template.kotlin.src.bluetoothlechat.CurrResultActivity
 import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.ChatServer
 import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.Message
 import com.softsquared.template.kotlin.src.bluetoothlechat.gone
 import com.softsquared.template.kotlin.src.bluetoothlechat.visible
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -54,20 +56,27 @@ class BluetoothChatFragment : Fragment() {
     private val binding: FragmentBluetoothChatBinding
         get() = _binding!!
 
-    /*워치 데이터 저장하는 변수*/
+    /*워치 데이터 저장*/
     private var output: String? = ""
+    private var cnt: Int = 0
+
     /*양치한 시간 저장하는 변수*/
     private var date: String? = null
     private var time: String? = null
     private var now = Date(System.currentTimeMillis())
     val pathFormat_date = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
     val pathFormat_time = SimpleDateFormat("HH시 mm분 ss초", Locale.KOREA)
+
     /*양치 결과 계산(태그, 소요시간, 점수)*/
     var tagCount = arrayOf<Int>(16, 0)// 0, 0, 0 ,0 ..., 0
     var beforeTime: Long = 0
     var afterTime: Long = 0
     var secDiffTime: Long = 0
     var score: Double = 0.0
+
+    /*태그*/
+    var tagNow: String? = ""
+    var tagResult: String? = ""
 
     private val deviceConnectionObserver = Observer<DeviceConnectionState> { state ->
         when(state) {
@@ -104,6 +113,7 @@ class BluetoothChatFragment : Fragment() {
             beforeTime = System.currentTimeMillis()
             Toast.makeText(context,"START", Toast.LENGTH_LONG).show()
         }
+        // 수정해야 함. tflite 모델이 태그를 리턴하면 태그 수가 늘어나게
         else if(message.text.contains("[TAG1]")){
             getTagData(0, message)
         }
@@ -156,7 +166,7 @@ class BluetoothChatFragment : Fragment() {
             stop_clicked = true
             afterTime = System.currentTimeMillis()
             Toast.makeText(context,"STOP", Toast.LENGTH_LONG).show()
-            output = "" // 초기화
+            //output = "" // 초기화
 //            when{
 //                !isExternalStorageWritable() -> Toast.makeText(this,"외부 저장장치 없음", Toast.LENGTH_LONG).show()
 //
@@ -174,6 +184,12 @@ class BluetoothChatFragment : Fragment() {
         }
         else{
             output += ( message.text ) // 워치로부터 받은 데이터를 모두 output에 저장한다
+            // 이 부분을 어떻게...파싱하고, 데이터 20개씩 잘라야 함.
+
+            tagNow = "1" // 모델에서 리턴해야 함!!
+            binding.txtTagNow.text = tagNow
+            tagResult += tagNow
+            binding.txtTagResult.text = tagResult
         }
     }
     fun getTagData(tag: Int, message:Message){
@@ -196,6 +212,11 @@ class BluetoothChatFragment : Fragment() {
 
         binding.connectDevices.setOnClickListener {
             findNavController().navigate(R.id.action_find_new_device) // Device List Fragment
+        }
+        try {
+            context?.let { Classifier(it) }?.init()
+        } catch (ioe: IOException) {
+            Log.d("TagClassifier", "fail to init Classifier", ioe)
         }
 
         return binding.root
