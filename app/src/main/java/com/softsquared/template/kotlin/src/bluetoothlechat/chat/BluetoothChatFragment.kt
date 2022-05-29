@@ -67,8 +67,7 @@ class BluetoothChatFragment : Fragment() {
     private var date: String? = null
     private var time: String? = null
     private var now = Date(System.currentTimeMillis())
-    private val pathFormat_date = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
-    private val pathFormat_time = SimpleDateFormat("HH시 mm분 ss초", Locale.KOREA)
+    private val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
 
     /*양치 결과 계산(태그, 소요시간, 점수)*/
     private var tagCount = IntArray(16)// 0, 0, 0 ,0 ..., 0
@@ -270,8 +269,7 @@ class BluetoothChatFragment : Fragment() {
         ChatServer.connectionRequest.observe(viewLifecycleOwner, connectionRequestObserver)
         ChatServer.deviceConnection.observe(viewLifecycleOwner, deviceConnectionObserver)
         ChatServer.messages.observe(viewLifecycleOwner, messageObserver)
-        date = pathFormat_date.format(now)
-        time = pathFormat_time.format(now)
+        time = timestamp.format(now)
     }
 
     override fun onDestroyView() {
@@ -302,7 +300,6 @@ class BluetoothChatFragment : Fragment() {
             val returnIntent = Intent(getActivity(), CurrResultActivity::class.java) // 결과 액티비티로 이동 해야함
             // 값 담기
             returnIntent.putExtra("time",time)
-            returnIntent.putExtra("date",date)
             returnIntent.putExtra("brushing_time",secDiffTime)
             returnIntent.putExtra("score",score)
 

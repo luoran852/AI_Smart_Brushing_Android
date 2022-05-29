@@ -23,12 +23,11 @@ class CurrResultActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_curr_result)
         setTitle("양치 결과")
-        date = intent.getStringExtra("date")
         time = intent.getStringExtra("time")
         score = intent.getDoubleExtra("score",0.0)
         brushing_time = intent.getLongExtra("brushing_time", 0)
         score = intent.getDoubleExtra("score",0.0)
-        Toast.makeText(this,"양치 시간: "+date+" / "+time, Toast.LENGTH_LONG).show()
+        Toast.makeText(this,"양치 시간: "+time, Toast.LENGTH_LONG).show()
        //Toast.makeText(this,"Time: "+ time +"초" + " score: " + score, Toast.LENGTH_LONG).show()
         val timeTxt = findViewById(R.id.time_txt) as TextView
         timeTxt.setText("양치시간:$brushing_time" + "초")
