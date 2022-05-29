@@ -1,6 +1,7 @@
 package com.softsquared.template.kotlin.src.bluetoothlechat
 
 import android.content.Context
+import android.util.Log
 import org.tensorflow.lite.Interpreter
 import java.io.FileInputStream
 import java.io.IOException
@@ -8,11 +9,18 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.FileChannel
 
+
 class Classifier {
 
     val context: Context
     private val MODEL_NAME: String = "saved_model.tflite"
     var interpreter: Interpreter? = null
+    //모델의 입력 크기 변수 선언
+    var modelInputWidth: Int = 0
+    var modelInputHeight:Int = 0
+    var modelInputChannel:Int = 0
+    //모델 출력 클래스 수를 담을 변수 선언
+    var modelOutputClasses:Int = 0
 
     constructor(context: Context) {
         this.context = context
@@ -51,5 +59,51 @@ class Classifier {
         * ByteBuffer 포맷으로 얻은 model을 Interpreter 클래스의 생성자에 전달하여
         * interpreter 인스턴스를 만든다. */
         interpreter = Interpreter(model)
+        initModelShape()
+    }
+
+    /*모델의 입출력 크기 계산 함수 정의*/
+    private fun initModelShape() {
+        val inputTensor = interpreter!!.getInputTensor(0)
+        val inputShape = inputTensor.shape()
+        modelInputChannel = inputShape[0]
+        modelInputWidth = inputShape[1]
+        modelInputHeight = inputShape[2]
+
+        val outputTensor = interpreter!!.getOutputTensor(0)
+        val outputShape = outputTensor.shape()
+        modelOutputClasses = outputShape[1]
+        Log.d("Classifier", "modelOutputClasses: $modelOutputClasses")
+        Log.d("Classifier", "input 채널: $modelInputChannel")
+        Log.d("Classifier", "Width 크기(9예상): $modelInputWidth")
+        Log.d("Classifier", "Height 크기(20예상): $modelInputHeight")
+    }
+
+    /*양치 구역 분석 모델의 추론*/
+    open fun classify(input: Array<Array<FloatArray>>): Int {
+        //val result = FloatArray(modelOutputClasses) // 16
+        val result = Array(1) { FloatArray(modelOutputClasses) }
+        interpreter!!.run(input, result)
+        Log.d("result 배열: ", result.contentDeepToString())
+        return argmax(result)
+    }
+
+    /*추론 결과 해석*/
+    private fun argmax(array: Array<FloatArray>): Int {
+        var argmax = -1 // 가장 확률이 높은 클래스: -1로 초기화
+        var max = 0.0 // 그 클래스의 확률: Class 1 확률로 초기화
+        Log.d("array.size(16이어야 하는데 설마 1?): ", array.size.toString())
+        for (i in 0 until 16) { // i= 1..15
+            val f = array[0][i] // Class 2~16까지의 확률을 비교
+            Log.d("Class[$i] 확률 값: ", f.toString())
+            if (f > max) {
+                argmax = i
+                max = f.toDouble() // max 확률 업데이트
+            }
+        }
+        return argmax
+    }
+    public fun finish(){
+        interpreter?.close()
     }
 }

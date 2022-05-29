@@ -16,6 +16,7 @@
 package com.softsquared.template.kotlin.src.bluetoothlechat.chat
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
@@ -45,38 +46,61 @@ import java.util.*
 
 
 private const val TAG = "BluetoothChatFragment"
-
+@SuppressLint("StaticFieldLeak")
+var cls: Classifier? = null
+// var cls: Classifier? = null
 class BluetoothChatFragment : Fragment() {
     private lateinit var callback: OnBackPressedCallback
 
-    var connected_once = false
-    var stop_clicked = false
+    private var connected_once = false
+    private var stop_clicked = false
     private var _binding: FragmentBluetoothChatBinding? = null
     // this property is valid between onCreateView and onDestroyView.
     private val binding: FragmentBluetoothChatBinding
         get() = _binding!!
 
     /*워치 데이터 저장*/
-    private var output: String = ""
+    private var data: String = ""
     private var cnt: Int = 0
 
     /*양치한 시간 저장하는 변수*/
     private var date: String? = null
     private var time: String? = null
     private var now = Date(System.currentTimeMillis())
-    val pathFormat_date = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
-    val pathFormat_time = SimpleDateFormat("HH시 mm분 ss초", Locale.KOREA)
+    private val pathFormat_date = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
+    private val pathFormat_time = SimpleDateFormat("HH시 mm분 ss초", Locale.KOREA)
 
     /*양치 결과 계산(태그, 소요시간, 점수)*/
-    var tagCount = arrayOf<Int>(16, 0)// 0, 0, 0 ,0 ..., 0
-    var beforeTime: Long = 0
-    var afterTime: Long = 0
-    var secDiffTime: Long = 0
-    var score: Double = 0.0
+    private var tagCount = IntArray(16)// 0, 0, 0 ,0 ..., 0
+    private var beforeTime: Long = 0
+    private var afterTime: Long = 0
+    private var secDiffTime: Long = 0
+    private var score: Double = 0.0
 
     /*태그*/
-    var tagNow: Int = 0
-    var tagResult: String? = ""
+    private var tagNow: Int = 0
+    private var tagResult: String? = ""
+
+    /*큐*/
+    private var linAccQueue: Queue<String> = LinkedList<String>()
+    private var gyQueue: Queue<String> = LinkedList<String>()
+    private var gravQueue: Queue<String> = LinkedList<String>()
+
+    private val input = Array(1) { Array<FloatArray>(20) { FloatArray(9) } }
+
+    val linAccX = FloatArray(20)
+    val linAccY = FloatArray(20)
+    val linAccZ = FloatArray(20)
+    val accX = FloatArray(20)
+    val accY = FloatArray(20)
+    val accZ = FloatArray(20)
+    val gyX = FloatArray(20)
+    val gyY = FloatArray(20)
+    val gyZ = FloatArray(20)
+    val gravX = FloatArray(20)
+    val gravY = FloatArray(20)
+    val gravZ = FloatArray(20)
+
 
     private val deviceConnectionObserver = Observer<DeviceConnectionState> { state ->
         when(state) {
@@ -106,6 +130,7 @@ class BluetoothChatFragment : Fragment() {
         Log.d(TAG, "Connection request observer: have device $device")
         ChatServer.setCurrentChatConnection(device)
     }
+
     //자기가 보낸 메세지, 받은 메세지를 모두 처리한다.
     private val messageObserver = Observer<Message> { message ->
         Log.d(TAG, "Have message ${message.text}")
@@ -117,47 +142,99 @@ class BluetoothChatFragment : Fragment() {
             stop_clicked = true
             afterTime = System.currentTimeMillis()
             Toast.makeText(context,"STOP", Toast.LENGTH_LONG).show()
-            //output = "" // 초기화
-//            when{
-//                !isExternalStorageWritable() -> Toast.makeText(this,"외부 저장장치 없음", Toast.LENGTH_LONG).show()
-//
-//                else -> {
-//                    val pathFormat = SimpleDateFormat("yyyy-MM-dd HH-mm-ss-SSS", Locale.KOREA)
-//                    time = pathFormat.format(date)
-//                    val filename = time + ".txt"
-//                    //외부저장소에 저장
-//                    output?.let { it1 -> saveToExternalStorage(it1,filename) }
-//                    System.out.println(output)
-//                    Toast.makeText(this,"저장되었습니다", Toast.LENGTH_LONG).show()
-//                    output = "" // 초기화
-//                }
-//            }
         }
         else{
-            if(cnt == 20){ // 행 20개, 열 9개가 한 세트임
-                val preprocessedInput = preprocess(output)// 전처리 함수가 파싱한 데이터 리턴
-                // 모델에 입력 값 넣으면 모델이 태그 리턴
-                tagNow = 1// 모델에서 리턴해야 함!!
-                getTagData(tagNow)
+            //Log.d(TAG, "Input size: " + input.size)
+            data =  message.text // 센서 3개의 데이터가 들어옴
+            // 이걸 콤마로 나눈다
+            val getLine = data.split(",") // 3줄로 나뉨
+
+            if((linAccQueue.size>20) && (gyQueue.size>20) && (gravQueue.size>20)){ // 모델에 입력할 만큼 데이터가 모였다.
+                for(i in 0 until 20){
+                    val linAcc = linAccQueue.poll().split(";")
+//                    Log.d(TAG, "linAcc 배열 크기: ${linAcc.size}")
+//                    Log.d(TAG, "linAcc[2]: "+ linAcc[2])
+//                    Log.d(TAG, "linAcc[4]: "+ linAcc[4])
+//                    Log.d(TAG, "linAcc[6]: "+ linAcc[6])
+                    linAccX[i] = linAcc[2].toFloat()
+                    linAccY[i] = linAcc[4].toFloat()
+                    linAccZ[i] = linAcc[6].toFloat()
+
+                    val gy = gyQueue.poll().split(";")
+//                    Log.d(TAG, "gy 배열 크기: ${gy.size}")
+//                    Log.d(TAG, "gy[2]: " + gy[2])
+//                    Log.d(TAG, "gy[4]: " + gy[4])
+//                    Log.d(TAG, "gy[6]: " + gy[6])
+                    gyX[i] = gy[2].toFloat()
+                    gyY[i] = gy[4].toFloat()
+                    gyZ[i] = gy[6].toFloat()
+
+                    val grav = gravQueue.poll().split(";")
+                    Log.d(TAG, "grav 배열 크기: ${grav.size}")
+//                    Log.d(TAG, "grav[2]: " + grav[2])
+//                    Log.d(TAG, "grav[4]: " + grav[4])
+//                    Log.d(TAG, "grav[6]: " + grav[6])
+                    gravX[i] = grav[2].toFloat()
+                    gravY[i] = grav[4].toFloat()
+                    gravZ[i] = grav[6].toFloat()
+                }
+                // 2. 파싱한 데이터 output 배열에 합치기
+                for (i in 0 until 20){
+                    // 선형 가속도를 중력 가속도로 변경
+                    accX[i] = linAccX[i] + gravX[i]
+                    accY[i] = linAccY[i] + gravY[i]
+                    accZ[i] = linAccZ[i] + gravZ[i]
+
+                    input[0][i][0] = accX[i] // output[0][0] = accX[0], output[1][1] = accX[1]
+                    Log.d(TAG, "i: $i")
+                    input[0][i][1] = accY[i]
+                    input[0][i][2] = accZ[i]
+                    input[0][i][3] = gyX[i]
+                    input[0][i][4] = gyY[i]
+                    input[0][i][5] = gyZ[i]
+                    input[0][i][6] = gravX[i]
+                    input[0][i][7] = gravY[i]
+                    input[0][i][8] = gravZ[i]
+                }
+                Log.d(TAG, "입력값: " + input.contentDeepToString())
+                tagNow = cls!!.classify(input) + 1//as Int // 모델에 입력 값 넣으면 모델이 태그 리턴
+                Log.d(TAG, "tagNow: $tagNow")
                 binding.txtTagNow.text = tagNow.toString()
                 tagResult += tagNow
                 binding.txtTagResult.text = tagResult
-                output = ""
-                cnt = 0
+                getTagData(tagNow)
+                // 각 큐에 넣어 준다
+                for(i in getLine.indices){
+                    if(getLine[i].contains("LIN_ACC[2]")){
+                        linAccQueue.add(getLine[i]) // ACC 1줄
+                    }
+                    else if(getLine[i].contains("GY[2]")){
+                        gyQueue.add(getLine[i])// GY 1줄
+                    }
+                    else if(getLine[i].contains("GRAV[2]")){
+                        gravQueue.add(getLine[i])// GRAV 1줄
+                    }
+                }
             }
-            else{
-                cnt+=1 // 카운트를 하나 늘려준다
-                output += ( message.text ) // 워치로부터 받은 데이터를 모두 output에 저장한다
+            else{ // 아직 데이터가 충분히 안모였다
+                // 각 큐에 넣어 준다
+                for(i in getLine.indices){
+                    if(getLine[i].contains("LIN_ACC[2]")){
+                        linAccQueue.add(getLine[i]) // ACC 1줄
+                    }
+                    else if(getLine[i].contains("GY[2]")){
+                        gyQueue.add(getLine[i])// GY 1줄
+                    }
+                    else if(getLine[i].contains("GRAV[2]")){
+                        gravQueue.add(getLine[i])// GRAV 1줄
+                    }
+                }
             }
-
         }
     }
-    fun preprocess(input: String): String {
-        val output: String = ""
-        return output
-    }
-    fun getTagData(tag: Int){
-        tagCount[tag]++
+
+    private fun getTagData(tag: Int){
+        tagCount[tag]+= 1
     }
     private val inputMethodManager by lazy {
         requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -175,8 +252,9 @@ class BluetoothChatFragment : Fragment() {
         binding.connectDevices.setOnClickListener {
             findNavController().navigate(R.id.action_find_new_device) // Device List Fragment
         }
+        cls = context?.let { Classifier(it) }
         try {
-            context?.let { Classifier(it) }?.init()
+            cls?.init()
         } catch (ioe: IOException) {
             Log.d("TagClassifier", "fail to init Classifier", ioe)
         }
@@ -197,6 +275,7 @@ class BluetoothChatFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        cls?.finish()
         super.onDestroyView()
         _binding = null
     }
@@ -257,7 +336,7 @@ class BluetoothChatFragment : Fragment() {
         callback.remove()
     }
 
-    private fun scoring(array: Array<Int>): Double{
+    private fun scoring(array: IntArray): Double{
         var score = 0.0
         // 구역 당 태그가 5개 들어와야 100점이라고 가정한다.
         for(i in array){
