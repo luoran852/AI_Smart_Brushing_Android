@@ -272,7 +272,6 @@ class BluetoothChatFragment : Fragment() {
         ChatServer.messages.observe(viewLifecycleOwner, messageObserver)
         date = pathFormat_date.format(now)
         time = pathFormat_time.format(now)
-        //Toast.makeText(context,"Date: "+ date + " Time: " + time, Toast.LENGTH_LONG).show()
     }
 
     override fun onDestroyView() {
