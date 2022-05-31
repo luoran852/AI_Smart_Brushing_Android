@@ -63,7 +63,6 @@ class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateD
         DateDetailService(this).tryGetDateDetail(type, userIdx, year, month, day)
         val okBtn = findViewById(R.id.btn_ok) as Button
         okBtn.setOnClickListener{
-            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
