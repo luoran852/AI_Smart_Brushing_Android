@@ -1,6 +1,5 @@
 package com.softsquared.template.kotlin.src.main.dateDetail
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -8,7 +7,6 @@ import com.softsquared.template.kotlin.R
 import com.softsquared.template.kotlin.config.ApplicationClass
 import com.softsquared.template.kotlin.config.BaseActivity
 import com.softsquared.template.kotlin.databinding.ActivityDateDetailBinding
-import com.softsquared.template.kotlin.src.main.MainActivity
 import com.softsquared.template.kotlin.src.main.dateDetail.models.DateDetailResponse
 
 class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateDetailBinding::inflate), DateDetailActivityView {
@@ -38,9 +36,15 @@ class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateD
 
 
         startDate = intent.getStringExtra("startDate") // 년 월 일
+        if(startDate == null){
+            startDate = "2022년 05월 31일"
+        }
         startTime = intent.getStringExtra("startTime") // 시 분 초
-        score = intent.getDoubleExtra("score",0.0) // 점수
-        brushing_time = intent.getLongExtra("brushing_time", 0) // 양치지속시간
+        if(startTime == null){
+            startTime = "13시 35분 42초"
+        }
+        score = intent.getDoubleExtra("score",60.25) // 점수
+        brushing_time = intent.getLongExtra("brushing_time", 200) // 양치지속시간
         sec = brushing_time!!.toInt()
         min = sec / 60
         sec %= 60
