@@ -73,10 +73,6 @@ class Classifier {
         val outputTensor = interpreter!!.getOutputTensor(0)
         val outputShape = outputTensor.shape()
         modelOutputClasses = outputShape[1]
-        Log.d("Classifier", "modelOutputClasses: $modelOutputClasses")
-        Log.d("Classifier", "input 채널: $modelInputChannel")
-        Log.d("Classifier", "Width 크기(9예상): $modelInputWidth")
-        Log.d("Classifier", "Height 크기(20예상): $modelInputHeight")
     }
 
     /*양치 구역 분석 모델의 추론*/
@@ -92,10 +88,9 @@ class Classifier {
     private fun argmax(array: Array<FloatArray>): Int {
         var argmax = -1 // 가장 확률이 높은 클래스: -1로 초기화
         var max = 0.0 // 그 클래스의 확률: Class 1 확률로 초기화
-        Log.d("array.size(16이어야 하는데 설마 1?): ", array.size.toString())
         for (i in 0 until 16) { // i= 1..15
             val f = array[0][i] // Class 2~16까지의 확률을 비교
-            Log.d("Class[$i] 확률 값: ", f.toString())
+            Log.d("Class[$i] 확률: ", f.toString())
             if (f > max) {
                 argmax = i
                 max = f.toDouble() // max 확률 업데이트

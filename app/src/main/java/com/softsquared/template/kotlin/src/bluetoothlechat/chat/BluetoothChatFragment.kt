@@ -70,7 +70,7 @@ class BluetoothChatFragment : Fragment() {
     private val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
 
     /*양치 결과 계산(태그, 소요시간, 점수)*/
-    private var tagCount = IntArray(16)// 0, 0, 0 ,0 ..., 0
+    private var tagCount = IntArray(17)// 0, 0, 0 ,0 ..., 0
     private var beforeTime: Long = 0
     private var afterTime: Long = 0
     private var secDiffTime: Long = 0
@@ -108,6 +108,8 @@ class BluetoothChatFragment : Fragment() {
                 Log.d(TAG, "Gatt connection observer: have device $device")
                 chatWith(device)
                 connected_once = true
+                beforeTime = System.currentTimeMillis() // start 메세지 못 받는 경우 대비
+                // 워치 연결 되면 바로 양치 시작 시간 기록
             }
             is DeviceConnectionState.Disconnected -> {
                 // 전에 연결 된 적이 있으면
@@ -151,31 +153,19 @@ class BluetoothChatFragment : Fragment() {
             if((linAccQueue.size>20) && (gyQueue.size>20) && (gravQueue.size>20)){ // 모델에 입력할 만큼 데이터가 모였다.
                 for(i in 0 until 20){
                     val linAcc = linAccQueue.poll().split(";")
-//                    Log.d(TAG, "linAcc 배열 크기: ${linAcc.size}")
-//                    Log.d(TAG, "linAcc[2]: "+ linAcc[2])
-//                    Log.d(TAG, "linAcc[4]: "+ linAcc[4])
-//                    Log.d(TAG, "linAcc[6]: "+ linAcc[6])
-                    linAccX[i] = linAcc[2].toFloat()
-                    linAccY[i] = linAcc[4].toFloat()
-                    linAccZ[i] = linAcc[6].toFloat()
+                    linAccX[i] = linAcc[1].toFloat()
+                    linAccY[i] = linAcc[3].toFloat()
+                    linAccZ[i] = linAcc[5].toFloat()
 
                     val gy = gyQueue.poll().split(";")
-//                    Log.d(TAG, "gy 배열 크기: ${gy.size}")
-//                    Log.d(TAG, "gy[2]: " + gy[2])
-//                    Log.d(TAG, "gy[4]: " + gy[4])
-//                    Log.d(TAG, "gy[6]: " + gy[6])
-                    gyX[i] = gy[2].toFloat()
-                    gyY[i] = gy[4].toFloat()
-                    gyZ[i] = gy[6].toFloat()
+                    gyX[i] = gy[1].toFloat()
+                    gyY[i] = gy[3].toFloat()
+                    gyZ[i] = gy[5].toFloat()
 
                     val grav = gravQueue.poll().split(";")
-                    Log.d(TAG, "grav 배열 크기: ${grav.size}")
-//                    Log.d(TAG, "grav[2]: " + grav[2])
-//                    Log.d(TAG, "grav[4]: " + grav[4])
-//                    Log.d(TAG, "grav[6]: " + grav[6])
-                    gravX[i] = grav[2].toFloat()
-                    gravY[i] = grav[4].toFloat()
-                    gravZ[i] = grav[6].toFloat()
+                    gravX[i] = grav[1].toFloat()
+                    gravY[i] = grav[3].toFloat()
+                    gravZ[i] = grav[5].toFloat()
                 }
                 // 2. 파싱한 데이터 output 배열에 합치기
                 for (i in 0 until 20){
@@ -185,7 +175,6 @@ class BluetoothChatFragment : Fragment() {
                     accZ[i] = linAccZ[i] + gravZ[i]
 
                     input[0][i][0] = accX[i] // output[0][0] = accX[0], output[1][1] = accX[1]
-                    Log.d(TAG, "i: $i")
                     input[0][i][1] = accY[i]
                     input[0][i][2] = accZ[i]
                     input[0][i][3] = gyX[i]
@@ -199,18 +188,18 @@ class BluetoothChatFragment : Fragment() {
                 tagNow = cls!!.classify(input) + 1//as Int // 모델에 입력 값 넣으면 모델이 태그 리턴
                 Log.d(TAG, "tagNow: $tagNow")
                 binding.txtTagNow.text = tagNow.toString()
-                tagResult += tagNow
+                tagResult = tagResult + tagNow + ", "
                 binding.txtTagResult.text = tagResult
                 getTagData(tagNow)
                 // 각 큐에 넣어 준다
                 for(i in getLine.indices){
-                    if(getLine[i].contains("LIN_ACC[2]")){
+                    if(getLine[i].contains("L[2]")){
                         linAccQueue.add(getLine[i]) // ACC 1줄
                     }
-                    else if(getLine[i].contains("GY[2]")){
+                    else if(getLine[i].contains("Y[2]")){
                         gyQueue.add(getLine[i])// GY 1줄
                     }
-                    else if(getLine[i].contains("GRAV[2]")){
+                    else if(getLine[i].contains("G[2]")){
                         gravQueue.add(getLine[i])// GRAV 1줄
                     }
                 }
@@ -218,13 +207,13 @@ class BluetoothChatFragment : Fragment() {
             else{ // 아직 데이터가 충분히 안모였다
                 // 각 큐에 넣어 준다
                 for(i in getLine.indices){
-                    if(getLine[i].contains("LIN_ACC[2]")){
+                    if(getLine[i].contains("L[2]")){
                         linAccQueue.add(getLine[i]) // ACC 1줄
                     }
-                    else if(getLine[i].contains("GY[2]")){
+                    else if(getLine[i].contains("Y[2]")){
                         gyQueue.add(getLine[i])// GY 1줄
                     }
-                    else if(getLine[i].contains("GRAV[2]")){
+                    else if(getLine[i].contains("V[2]")){
                         gravQueue.add(getLine[i])// GRAV 1줄
                     }
                 }

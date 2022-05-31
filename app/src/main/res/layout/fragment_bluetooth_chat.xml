@@ -55,11 +55,6 @@
             android:layout_gravity="center"
             android:padding="16dp"
             android:textSize="18sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="BlutoothChatFragment: 유니티 화면 들어오는 곳"/>
 
         <ImageView
             android:id="@+id/img_teeth"
@@ -80,7 +75,7 @@
             android:id="@+id/txt_tag_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"/>
+            android:layout_margin="30dp"/>
         <Button
             android:id="@+id/stop_btn"
             android:layout_width="wrap_content"

@@ -272,7 +272,7 @@ object ChatServer {
             if (characteristic.uuid == MESSAGE_UUID) {
                 gattServer?.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, null)
                 val message = value?.toString(Charsets.UTF_8)
-                Log.d(TAG, "onCharacteristicWriteRequest: Have message: \"$message\"")
+                // Log.d(TAG, "onCharacteristicWriteRequest: Have message: \"$message\"")
                 message?.let {
                     _messages.postValue(Message.RemoteMessage(it))
                 }
