@@ -40,7 +40,6 @@ import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.ChatServer
 import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.Message
 import com.softsquared.template.kotlin.src.bluetoothlechat.gone
 import com.softsquared.template.kotlin.src.bluetoothlechat.visible
-import com.softsquared.template.kotlin.src.main.dateDetail.DateDetailActivity
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,10 +61,8 @@ class BluetoothChatFragment : Fragment() {
 
     /*워치 데이터 저장*/
     private var data: String = ""
-    private var cnt: Int = 0
 
     /*양치한 시간 저장하는 변수*/
-    private var date: String? = null
     private var time: String? = null
     private var now = Date(System.currentTimeMillis()) // 양치 시작 날짜 (Date)
 
@@ -88,6 +85,14 @@ class BluetoothChatFragment : Fragment() {
     private var secDiffTime: Long = 0
     private var score: Double = 0.0
 
+    private var rightUpper= 0.0 // 오른쪽 상악부 - TAG 1, 7, 13 => 1
+    private var frontUpper= 0.0 // 앞니 상악부 - TAG 2, 8 => 2
+    private var leftUpper= 0.0 // 왼쪽 상악부 - TAG 3, 9, 14 => 3
+    private var leftBottom= 0.0 // 왼쪽 하악부 - TAG 4, 10, 15 => 4
+    private var frontBottom= 0.0 // 앞니 하악부 - TAG 5, 11 => 5
+    private var rightBottom= 0.0 // 오른쪽 하악부 - TAG 6, 12, 16 => 6
+    private var feedbackScore = Array(6, {0.0})
+    private var resultArray = ArrayList<Int>()
     /*태그*/
     private var tagNow: Int = 0
     private var tagResult: String? = ""
@@ -296,7 +301,12 @@ class BluetoothChatFragment : Fragment() {
             }
             secDiffTime = (afterTime - beforeTime)/1000;
             score = scoring(tagCount)
-            //Toast.makeText(this,"Time: "+ secDiffTime +"초" + " score: " + score, Toast.LENGTH_LONG).show()
+            for(i in 0..5){
+                if(feedbackScore[i] < 50){
+                    resultArray.add(i)
+                }
+            }
+
             // 결과 돌려줄 인텐트 생성 후 저장
             val returnIntent = Intent(activity, CurrResultActivity::class.java) // 결과 액티비티로 이동 해야함
             // 값 담기
@@ -304,6 +314,7 @@ class BluetoothChatFragment : Fragment() {
             returnIntent.putExtra("startTime",tempTime) // 양치 시작 시간 (String)
             returnIntent.putExtra("brushing_time",secDiffTime) // 양치하는데 걸린 시간 (Long)
             returnIntent.putExtra("score",score) // 양치 점수 (Double)
+            returnIntent.putExtra("feedback",resultArray) // 양치 점수 (Double)
 
 //            /* 임시 */
 //            val DetailIntent = Intent(getActivity(), DateDetailActivity::class.java) // 캘린더 액티비티로 이동
@@ -349,10 +360,41 @@ class BluetoothChatFragment : Fragment() {
     private fun scoring(array: IntArray): Double{
         var score = 0.0
         // 구역 당 태그가 5개 들어와야 100점이라고 가정한다.
-        for(i in array){
-            score += (20 * i)
+        for(i in 0..15){
+            score += (20 * array[i])
+            if((i==0)||(i==6)||(i==12)){
+                rightUpper += score
+            }
+            else if((i==1)||(i==7)){
+                frontUpper += score
+            }
+            else if((i==2)||(i==8)||(i==13)){
+                leftUpper += score
+            }
+            else if((i==3)||(i==9)||(i==14)){
+                leftBottom += score
+            }
+            else if((i==4)||(i==10)){
+                frontBottom += score
+            }
+            else if((i==5)||(i==11)||(i==15)){
+                rightBottom += score
+            }
             print("score: "+ (20 * i))
         }
+        rightUpper /= 3
+        feedbackScore[0] = rightUpper
+        frontUpper /= 2
+        feedbackScore[1] = frontUpper
+        leftUpper /= 3
+        feedbackScore[2] = leftUpper
+        leftBottom /= 3
+        feedbackScore[3] = leftBottom
+        frontBottom /= 2
+        feedbackScore[4] = frontBottom
+        rightBottom /= 3
+        feedbackScore[5] = rightBottom
+
         score /= 16
         print("total: $score")
         return score
