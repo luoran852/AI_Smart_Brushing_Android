@@ -22,6 +22,6 @@
         android:icon="@drawable/ic_setting_view_unselected"
         app:showAsAction="always"
         android:enabled="true"
-        android:title="@string/main_btm_nav_my_page_title" />
+        android:title="@string/main_btm_nav_setting_title" />
 
 </menu>
