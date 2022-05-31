@@ -40,6 +40,7 @@ import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.ChatServer
 import com.softsquared.template.kotlin.src.bluetoothlechat.bluetooth.Message
 import com.softsquared.template.kotlin.src.bluetoothlechat.gone
 import com.softsquared.template.kotlin.src.bluetoothlechat.visible
+import com.softsquared.template.kotlin.src.main.dateDetail.DateDetailActivity
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -66,7 +67,18 @@ class BluetoothChatFragment : Fragment() {
     /*양치한 시간 저장하는 변수*/
     private var date: String? = null
     private var time: String? = null
-    private var now = Date(System.currentTimeMillis())
+    private var now = Date(System.currentTimeMillis()) // 양치 시작 날짜 (Date)
+
+    /* 임시 */
+
+    private val brushStartDate = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
+    private val brushStartTime = SimpleDateFormat("HH시 mm분 ss초", Locale.KOREA)
+    private val tempDate = brushStartDate.format(now) // 양치시작날짜
+    private val tempTime = brushStartTime.format(now) // 양치시작시간
+
+    /* 임시 */
+
+    private var hour = now.hours // 양치 시작시간 (Int)
     private val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
 
     /*양치 결과 계산(태그, 소요시간, 점수)*/
@@ -288,13 +300,23 @@ class BluetoothChatFragment : Fragment() {
             // 결과 돌려줄 인텐트 생성 후 저장
             val returnIntent = Intent(getActivity(), CurrResultActivity::class.java) // 결과 액티비티로 이동 해야함
             // 값 담기
-            returnIntent.putExtra("time",time)
-            returnIntent.putExtra("brushing_time",secDiffTime)
-            returnIntent.putExtra("score",score)
+            returnIntent.putExtra("time",time) // 양치 시작 시간 (String)
+            returnIntent.putExtra("brushing_time",secDiffTime) // 양치하는데 걸린 시간 (Long)
+            returnIntent.putExtra("score",score) // 양치 점수 (Double)
+
+            /* 임시 */
+            val DetailIntent = Intent(getActivity(), DateDetailActivity::class.java) // 캘린더 액티비티로 이동
+            // 값 담기
+            DetailIntent.putExtra("startDate",tempDate) // 양치 시작 날짜 (String)
+            DetailIntent.putExtra("startTime",tempTime) // 양치 시작 시간 (String)
+            DetailIntent.putExtra("brushing_time",secDiffTime) // 양치하는데 걸린 시간 (Long)
+            DetailIntent.putExtra("score",score) // 양치 점수 (Double)
+            /* 임시 */
 
             getActivity()?.let { it1 -> ActivityCompat.finishAffinity(it1) } // 모든 액티비티 종료
 
             startActivity(returnIntent)// 최종 전달
+            startActivity(DetailIntent)// 최종 전달
         }
     }
     private fun showDisconnected() {

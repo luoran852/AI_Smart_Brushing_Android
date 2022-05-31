@@ -51,11 +51,25 @@ class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateD
                     "brushtime = ${response.result.brushtime.toString() + '초'}, " +
                     "score = ${response.result.score.toString() + '점'}, " +
                     "feedbackMsg = ${response.result.feedbackMsg}")
-            binding.brushingDate.text = response.result.brushDate
-            binding.brushingExactTime.text = response.result.exactTime
-            binding.brushingSpendTime.text = response.result.brushtime.toString() + '초'
-            binding.scoreTxt.text = response.result.score.toString() + '점'
-            binding.feedbackTxt.text = response.result.feedbackMsg
+
+            val startDate = intent.getStringExtra("startDate") // 년 월 일
+            val startTime = intent.getStringExtra("startTime") // 시 분 초
+            val score = intent.getDoubleExtra("score",0.0) // 점수
+            val brushing_time = intent.getLongExtra("brushing_time", 0) // 양치지속시간
+
+            binding.brushingDate.text = startDate
+            binding.brushingExactTime.text = startTime
+            binding.brushingSpendTime.text = brushing_time.toString() + '초'
+            binding.scoreTxt.text = score.toString() + '점'
+            binding.feedbackTxt.text = "오른쪽 상악부 양치질이 더 필요합니다."
+
+            // 나중에 주석풀기
+//            binding.brushingDate.text = response.result.brushDate
+//            binding.brushingExactTime.text = response.result.exactTime
+//            binding.brushingSpendTime.text = response.result.brushtime.toString() + '초'
+//            binding.scoreTxt.text = response.result.score.toString() + '점'
+//            binding.feedbackTxt.text = response.result.feedbackMsg
+
         }
     }
 
