@@ -72,11 +72,7 @@
             android:name=".src.bluetoothlechat.BleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".src.bluetoothlechat.CurrResultActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
-            />
+        
     </application>
 
 </manifest>

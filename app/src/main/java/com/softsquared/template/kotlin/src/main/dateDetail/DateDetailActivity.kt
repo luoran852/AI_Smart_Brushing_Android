@@ -3,14 +3,23 @@ package com.softsquared.template.kotlin.src.main.dateDetail
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import com.softsquared.template.kotlin.R
 import com.softsquared.template.kotlin.config.ApplicationClass
 import com.softsquared.template.kotlin.config.BaseActivity
 import com.softsquared.template.kotlin.databinding.ActivityDateDetailBinding
+import com.softsquared.template.kotlin.src.main.MainActivity
 import com.softsquared.template.kotlin.src.main.dateDetail.models.DateDetailResponse
 
 class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateDetailBinding::inflate), DateDetailActivityView {
 
     val TAG : String = "태그"
+    var startDate: String? = null
+    var startTime: String? = null
+    var score: Double ?= 0.0 // 양치 점수
+    var brushing_time: Long ?= 0 // 양치 소요 시간
+    var min = 0
+    var sec = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +37,20 @@ class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateD
         val day = intent.getIntExtra("day", 0)
 
 
+        startDate = intent.getStringExtra("startDate") // 년 월 일
+        startTime = intent.getStringExtra("startTime") // 시 분 초
+        score = intent.getDoubleExtra("score",0.0) // 점수
+        brushing_time = intent.getLongExtra("brushing_time", 0) // 양치지속시간
+        sec = brushing_time!!.toInt()
+        min = sec / 60
+        sec %= 60
+
+        binding.brushingDate.text = startDate
+        binding.brushingExactTime.text = startTime
+        binding.brushingSpendTime.text = " $min" +"분 $sec" + "초"
+        binding.scoreTxt.text = score.toString() + '점'
+        binding.feedbackTxt.text = "오른쪽 상악부 양치질이 더 필요합니다."
+
         Log.e(TAG, "DateDetailActivity: userIdx = ${userIdx}, type = ${type}," +
                 "year = ${year}, month = ${month}, day = ${day}")
 
@@ -38,7 +61,11 @@ class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateD
 
         showLoadingDialog(this)
         DateDetailService(this).tryGetDateDetail(type, userIdx, year, month, day)
-
+        val okBtn = findViewById(R.id.btn_ok) as Button
+        okBtn.setOnClickListener{
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+        }
     }
 
     override fun onGetDateDetailSuccess(response: DateDetailResponse) {
@@ -52,16 +79,7 @@ class DateDetailActivity : BaseActivity<ActivityDateDetailBinding>(ActivityDateD
                     "score = ${response.result.score.toString() + '점'}, " +
                     "feedbackMsg = ${response.result.feedbackMsg}")
 
-            val startDate = intent.getStringExtra("startDate") // 년 월 일
-            val startTime = intent.getStringExtra("startTime") // 시 분 초
-            val score = intent.getDoubleExtra("score",0.0) // 점수
-            val brushing_time = intent.getLongExtra("brushing_time", 0) // 양치지속시간
 
-            binding.brushingDate.text = startDate
-            binding.brushingExactTime.text = startTime
-            binding.brushingSpendTime.text = brushing_time.toString() + '초'
-            binding.scoreTxt.text = score.toString() + '점'
-            binding.feedbackTxt.text = "오른쪽 상악부 양치질이 더 필요합니다."
 
             // 나중에 주석풀기
 //            binding.brushingDate.text = response.result.brushDate
