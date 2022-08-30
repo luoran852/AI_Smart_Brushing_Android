@@ -40,7 +40,7 @@ dependecies {
 
 ## 7. Developers
 * [고유미] @[YumiGo](https://github.com/YumiGo): kumi1224@naver.com
-* [김정규] @[sosqre0105](https://github.com/sosqre0105): sosqre0105@gachon.ac.kr
+* [김정규] @[sosqre0105](https://github.com/sosqre0105): kimjg_98@naver.com
 * [김한결] @[luoran852](https://github.com/luoran852): hannn0414@naver.com
 
 ## 8. Presentation Video on Youtube
