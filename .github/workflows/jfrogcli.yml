@@ -42,7 +42,7 @@ jobs:
 #           JF_USER: radmin
 #           JF_PASSWORD: 1Tjsfkdlwm!@
       - run: |
-          jf rt ping
+         # jf rt ping
           jf rt dl artifacts/
           jf rt u aether artifacts/
           # Publish build-info
