@@ -1,0 +1,45 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: Setup JFrog CLI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      with:
+        arguments: build
+        
+    - uses: jfrog/setup-jfrog-cli@v3
+      with:
+        version: latest
+    - env:
+        JF_ENV_1: ${{ eyJ2ZXJzaW9uIjoyLCJ1cmwiOiJodHRwczovL2FiaXN4LmFobmxhYi5jb20vIiwiYXJ0aWZhY3RvcnlVcmwiOiJodHRwczovL2FiaXN4LmFobmxhYi5jb20vYXJ0aWZhY3RvcnkvIiwiZGlzdHJpYnV0aW9uVXJsIjoiaHR0cHM6Ly9hYmlzeC5haG5sYWIuY29tL2Rpc3RyaWJ1dGlvbi8iLCJ4cmF5VXJsIjoiaHR0cHM6Ly9hYmlzeC5haG5sYWIuY29tL3hyYXkvIiwibWlzc2lvbkNvbnRyb2xVcmwiOiJodHRwczovL2FiaXN4LmFobmxhYi5jb20vbWMvIiwicGlwZWxpbmVzVXJsIjoiaHR0cHM6Ly9hYmlzeC5haG5sYWIuY29tL3BpcGVsaW5lcy8iLCJ1c2VyIjoicmFkbWluIiwicGFzc3dvcmQiOiJBUDlOdEVzWll5NThzZzZ6ZlJQNXhtRGNhbnIiLCJhY2Nlc3NUb2tlbiI6ImV5SjJaWElpT2lJeUlpd2lkSGx3SWpvaVNsZFVJaXdpWVd4bklqb2lVbE15TlRZaUxDSnJhV1FpT2lKTk1IVTBXRkpOWkY5blJsTmpNV1YwWDJONVQwNURhMDFqVXpOemRtUk1UR3M1ZW5Sb1lrZDBPVGgzSW4wLmV5SnpkV0lpT2lKcVpuSjBRREF4WjNseVpXRTBkek41ZG0wME1XSXhkRzF5YURneGNIUm9YQzkxYzJWeWMxd3ZjbUZrYldsdUlpd2ljMk53SWpvaWJXVnRZbVZ5TFc5bUxXZHliM1Z3Y3pvcUlpd2lZWFZrSWpvaWFtWnlkRUF3TVdkNWNtVmhOSGN6ZVhadE5ERmlNWFJ0Y21nNE1YQjBhQ0lzSW1semN5STZJbXBtY25SQU1ERm5lWEpsWVRSM00zbDJiVFF4WWpGMGJYSm9PREZ3ZEdoY0wzVnpaWEp6WEM5eVlXUnRhVzRpTENKbGVIQWlPakUyT0RRd05qZzNORElzSW1saGRDSTZNVFk0TkRBMk5URTBNaXdpYW5ScElqb2lOREU1WldNM1pEUXRaR1JqTmkwME1qaGhMV0l5TWpndFpEWmtaRFExWldVME5HVXhJbjAuRWZYb0NZNlFNM3FLLWFraUpJckpJRDFGN0NWZ0Rhd0ZDSUdzUExWclJHWWNXWU55YTNncEtzTmdCY2FZTDhpRGVEY1F6bFQ5TmxVbXEtTzNfTFA5SmlNVlpYOXZkendqUHB0MTBvVG10ZGlZVUZQMHQwOEV4bXNOeDFWUkRHYnRfWFRucHJ4VmV2c1NSbFNSSVltbjlxMEJRUndQTmVldjVZSTcwWW82M1dEamc5X0ZQS2ttUnB6ZVd4TlRoX0NTcGtHUGFSQ293N1VLZVh4cTJpekFwT3Z1YktheWxuNlpWWExFaVVOZmlTQXRLTUlHaXJDX3J5N2VpZ0otQzVmVTRxNnJDbFBPbFE0YkhJaEhXVWlSY0FQcGVJUzBNZ3BxMjhPdXRSdmpDMnFnYU5RRmctRWl0dmtEVU01eWk5cGJ3RXJjcDRNYmRHY0NSV1U1a3d2bFZRIiwicmVmcmVzaFRva2VuIjoiZThmYmNjMWQtMDM2My00MTgyLThlNjMtNzU1MmIzMjc0OGIzIiwiY2xpZW50Q2VydFBhdGgiOiIvZXRjL25naW54L3NzbC9hbGwuYWhubGFiLmNvbS5jcnQiLCJjbGllbnRDZXJ0S2V5UGF0aCI6Ii9ldGMvbmdpbngvc3NsL3ByaXZhdGUvYWxsLmFobmxhYi5jb20ua2V5LnBlbSIsInNlcnZlcklkIjoiYWJpc3gifQ== }}
+    - run: |
+        jf rt ping
+        jf rt dl artifacts/
+        jf rt u aether artifacts/
+        jf rt bp
