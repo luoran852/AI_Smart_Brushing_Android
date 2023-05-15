@@ -32,8 +32,8 @@ jobs:
 #       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
 #       with:
 #         arguments: build
-        
-    - uses: jfrog/setup-jfrog-cli@v3
+    - name: Setup JFrog CLI
+      uses: jfrog/setup-jfrog-cli@v3
       with:
         version: latest
     - env:
