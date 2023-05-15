@@ -41,8 +41,8 @@ jobs:
 #           # Basic authentication credentials
 #           JF_USER: radmin
 #           JF_PASSWORD: 1Tjsfkdlwm!@
-#           jf rt ping
       - run: |
+          jf rt ping
           jf rt dl artifacts/
           jf rt u aether artifacts/
           # Publish build-info
